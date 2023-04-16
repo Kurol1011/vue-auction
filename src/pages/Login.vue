@@ -1,5 +1,17 @@
 <template>
   <div>
+
+    <transition name="slide-fade">
+      <div class="auth__status__block" v-if="hasAuthSuccess" style="color:#4fb416">
+        User login success
+      </div>
+    </transition>
+    <transition name="slide-fade">
+      <div class="auth__status__block" v-if="hasAuthError"  style="color:red">
+        An error occurred in login
+      </div>
+    </transition>
+
     <h1 class="part__login">Login page</h1>
     <div class="container__login">
       <form @submit.prevent="sendLoginRequest()">
@@ -22,7 +34,9 @@ export default {
       User:{
         email:'',
         password:''
-      }
+      },
+      hasAuthSuccess:false,
+      hasAuthError: false,
     }
   },
   methods:{
@@ -36,9 +50,12 @@ export default {
           //.then(response => { this.$store.commit('auth_data/setJwtToken',response.data.token);})
           .then(response => {
             localStorage.setItem('token', response.data.token);
-            console.log('login success');
+            this.hasAuthSuccess = true;
           })
-          .catch(error => { console.log(error)})
+          .catch(error => {
+            console.log(error);
+            this.hasAuthError = true;
+          })
     }
   },
 mounted() {
@@ -59,6 +76,46 @@ mounted() {
 </script>
 
 <style scoped>
+
+.auth__status__block{
+  width:200px;
+  height:70px;
+  position: absolute;
+  right:0;
+  padding: 10px;
+  font-size: 17px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
+  background-color: #a7d9b6;
+  box-shadow: 3px 3px 3px black;
+}
+.auth__status__block{
+  width:200px;
+  height:70px;
+  position: absolute;
+  right:0;
+  padding: 10px;
+  color:#4fb416;
+  font-size: 17px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
+  background-color: #a7d9b6;
+  box-shadow: 3px 3px 3px black;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
 
 .part__login{
   text-align: center;

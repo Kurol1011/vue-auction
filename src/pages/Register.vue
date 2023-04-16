@@ -1,13 +1,12 @@
 <template>
   <div>
-    <button @click="turn">click</button>
     <transition name="slide-fade">
-      <div class="register__status__block" v-if="hasRegistrationSuccess" style="color:#4fb416">
+      <div class="auth__status__block" v-if="hasAuthSuccess" style="color:#4fb416">
         User registration success
       </div>
     </transition>
     <transition name="slide-fade">
-      <div class="register__status__block" v-if="hasRegistrationError"  style="color:red">
+      <div class="auth__status__block" v-if="hasAuthError"  style="color:red">
         An error occurred in registration
       </div>
     </transition>
@@ -47,8 +46,8 @@ export default {
         email:'',
         password:'',
       },
-      hasRegistrationSuccess:false,
-      hasRegistrationError: false,
+      hasAuthSuccess:false,
+      hasAuthError: false,
     };
   },
   methods: {
@@ -62,22 +61,19 @@ export default {
           .then(response =>{
             //this.$store.commit('auth_data/setJwtToken',response.data.token);
             localStorage.setItem('token',response.data.token);
-            this.hasRegistrationSuccess = true;
+            this.hasAuthSuccess = true;
           })
           .catch(error => {
             console.log(error);
-            this.hasRegistrationError = true;
+            this.hasAuthError = true;
           });
     },
-    turn(){
-      this.hasRegistrationError = true;
-    }
   },
 };
 </script>
 
 <style>
-.register__status__block{
+.auth__status__block{
   width:200px;
   height:70px;
   position: absolute;
@@ -89,7 +85,7 @@ export default {
   background-color: #a7d9b6;
   box-shadow: 3px 3px 3px black;
 }
-.register__status__block{
+.auth__status__block{
   width:200px;
   height:70px;
   position: absolute;
