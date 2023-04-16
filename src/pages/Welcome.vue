@@ -16,7 +16,13 @@ export default {
   },
 methods:{
   getHi(){
-    const hiReq = axios.get("http://localhost:8080/bye",{headers:this.$store.getters['auth_data/sendRequestHeaders']})
+    const hiReq = axios.get("http://localhost:8080/hello",
+        {
+          headers:{
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+             'Content-Type': 'application/json'
+          }
+        })
         .then(response => console.log(response.data))
         .catch(error => console.log(error))
   }

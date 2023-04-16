@@ -27,10 +27,16 @@ export default {
   },
   methods:{
     sendLoginRequest(){
-      axios.post(this.LoginURL,this.User,{headers:this.$store.state.auth_data.authHeaders})
+      axios.post(this.LoginURL,this.User,{
+        headers:{
+          //this.$store.state.auth_data.authHeaders
+          'Content-Type': 'application/json'
+        }
+      })
           //.then(response => { this.$store.commit('auth_data/setJwtToken',response.data.token);})
           .then(response => {
             localStorage.setItem('token', response.data.token);
+            console.log('login success');
           })
           .catch(error => { console.log(error)})
     }

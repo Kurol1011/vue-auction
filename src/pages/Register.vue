@@ -53,11 +53,16 @@ export default {
   },
   methods: {
     sendRegisterRequest(){
-      const request = axios.post(this.registerApiUrl, this.userRegister,{headers:this.$store.state.auth_data.authHeaders})
+      axios.post(this.registerApiUrl, this.userRegister,{
+        headers: {
+          //this.$store.state.auth_data.authHeaders
+          'Content-Type': 'application/json'
+        }
+      })
           .then(response =>{
             //this.$store.commit('auth_data/setJwtToken',response.data.token);
             localStorage.setItem('token',response.data.token);
-            this.userRegistrationSuccess = true;
+            this.hasRegistrationSuccess = true;
           })
           .catch(error => {
             console.log(error);

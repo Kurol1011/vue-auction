@@ -12,8 +12,7 @@ export default {
 
   data() {
     return {
-      URL:"http://localhost:8080/hello",
-      message:'Main page',
+
     };
   },
   methods:{
@@ -24,7 +23,7 @@ export default {
   mounted() {
     axios.interceptors.request.use(
         config => {
-          const token = localStorage.getItem('jwtToken');
+          const token = localStorage.getItem('token');
           if (token) {
             config.headers.Authorization = `Bearer ${token}`;
           }

@@ -1,29 +1,50 @@
 <template>
   <h1 class="part_create__item">Create Item</h1>
   <div class="create__auction__item__container">
-    <form @submit.prevent="" class="create__auction__item_form">
-      <label for="title" class="create__auction__item__label">Title</label>
+    <form @submit.prevent="createAuctionItem()" class="create__auction__item_form">
+      <label for="title" class="create__auction__item__label" >Title</label>
       <input type="text" placeholder="Title" class="create__auction__item__input" v-model="auctionItem.title">
       <label for="description" class="create__auction__item__label">Description</label>
       <textarea type="text" placeholder="description" class="create__auction__item__textarea" v-model="auctionItem.description"></textarea>
       <label for="title" class="create__auction__item__label">Initial Price</label>
-      <input type="text" placeholder="Title" class="create__auction__item__input" v-model="auctionItem.initialPrice">
+      <input type="number" placeholder="Initial price" class="create__auction__item__input" v-model="auctionItem.initialPrice">
       <button class="create__auction__item__btn">Add auction</button>
     </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data(){
     return {
+      URL:'http://localhost:8080/item/create',
       auctionItem:{
         title:'',
         description:'',
-        initialPrice:''
+        initialPrice:0
       }
     }
   },
+  methods:{
+    createAuctionItem() {
+      axios.post(this.URL, this.auctionItem, {
+        headers: {
+          //this.$store.state.auth_data.authHeaders
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      })
+          //.then(response => { this.$store.commit('auth_data/setJwtToken',response.data.token);})
+          .then(response => {
+            console.log('item created');
+          })
+          .catch(error => {
+            console.log(error)
+          })
+    }
+  }
 }
 </script>
 

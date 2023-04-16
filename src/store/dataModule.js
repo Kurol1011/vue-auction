@@ -2,13 +2,13 @@ export const dataModule = {
     state: () => ({
         //наши данные
         auctionItems: [
-            {id:1,title:'Nissan GTR',description:'The Nissan GT-R (Japanese: 日産・GT-R, Nissan GT-R),' +
+            {id:75,title:'Nissan GTR',description:'The Nissan GT-R (Japanese: 日産・GT-R, Nissan GT-R),' +
                     ' is a sports car and grand tourer produced by Nissan, unveiled in 2007.[3][4][5] ' +
                     'It is the successor to the Nissan Skyline GT-R, a high-performance variant of the Nissan' +
                     ' Skyline. Although this model was the sixth-generation to bear the GT-R name, it is no' +
                     ' longer part of the Skyline line-up. The GT-R is built on' +
                     ' the PM platform, which is derived from the FM platform used in the Skyline and the Nissan Z models.',initialPrice: 12000},
-            {id:2,title:'Supra mk4',description:'The Toyota Supra (Japanese: トヨタ・スープラ, Hepburn: Toyota Sūpura) is a sports' +
+            {id:76,title:'Supra mk4',description:'The Toyota Supra (Japanese: トヨタ・スープラ, Hepburn: Toyota Sūpura) is a sports' +
                     ' car and grand tourer manufactured by the Toyota Motor Corporation beginning in 1978.'+
                     'The initial four generations of the Supra were produced from 1978 to 2002. The fifth generation' +
                     ' has been produced since March 2019 and went on sale in May 2019.[4] The styling of the original Supra ' +
@@ -16,12 +16,13 @@ export const dataModule = {
                     ' became a separate model from the Celica. In turn, Toyota also stopped using the prefix Celica and named' +
                     ' the car Supra.[6] Owing to the similarity and past of the Celicas name, it is frequently mistaken for'
                 ,initialPrice: 15000},
-            {id:3,title:'Toyota Trueno ae86',description:'The Nissan GT-R (Japanese: 日産・GT-R, Nissan GT-R),' +
+            {id:77,title:'Toyota Trueno ae86',description:'The Nissan GT-R (Japanese: 日産・GT-R, Nissan GT-R),' +
                     ' is a sports car and grand tourer produced by Nissan, unveiled in 2007.[3][4][5] ' +
                     'It is the successor to the Nissan Skyline GT-R, a high-performance variant of the Nissan' +
                     ' Skyline. Although this model was the sixth-generation to bear the GT-R name, it is no' +
                     ' longer part of the Skyline line-up. The GT-R is built on' +
-                    ' the PM platform, which is derived from the FM platform used in the Skyline and the Nissan Z models.',initialPrice: 7500}
+                    ' the PM platform, which is derived from the FM platform used in the Skyline and the Nissan Z models.',initialPrice: 7500},
+
         ]
     }),
     getters:{
