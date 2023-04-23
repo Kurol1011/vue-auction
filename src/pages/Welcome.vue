@@ -16,10 +16,23 @@ export default {
   },
 methods:{
   getHi(){
-    const hiReq = axios.get("http://localhost:8080/hello",
+    axios.interceptors.request.use(
+        config => {
+          const token = localStorage.getItem('token');
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+            config.headers["Content-Type"] = "application/json";
+          }
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
+    );
+    const hiReq = axios.get("http://localhost:8081/hello",
         {
           headers:{
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            //'Authorization': 'Bearer ' + localStorage.getItem('token'),
              'Content-Type': 'application/json'
           }
         })

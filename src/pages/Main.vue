@@ -16,16 +16,14 @@ export default {
     };
   },
   methods:{
-    getHi(){
-      axios.get(this.URL).then(response => this.message = response.data).catch(error => console.log(error))
-    }
   },
-  mounted() {
+  async created() {
     axios.interceptors.request.use(
         config => {
           const token = localStorage.getItem('token');
           if (token) {
             config.headers.Authorization = `Bearer ${token}`;
+            config.headers["Content-Type"] = "application/json";
           }
           return config;
         },
@@ -33,6 +31,10 @@ export default {
           return Promise.reject(error);
         }
     );
+    axios.get('http://localhost:8081/auctions')
+        .then(response => this.$store.commit('global_data/addAuctionItems',response.data))
+        //.then(response => console.log(response.data))
+        .catch(error => console.log(error))
   }
 
 }

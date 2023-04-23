@@ -4,22 +4,33 @@
     <form @submit.prevent="createAuctionItem()" class="create__auction__item_form">
       <label for="title" class="create__auction__item__label" >Title</label>
       <input type="text" placeholder="Title" class="create__auction__item__input" v-model="auctionItem.title">
+      <div v-for="error in v$.auctionItem.title.$errors" :key="error.$uid" class="register__error__message">{{error.$message}}</div>
+
       <label for="description" class="create__auction__item__label">Description</label>
       <textarea type="text" placeholder="description" class="create__auction__item__textarea" v-model="auctionItem.description"></textarea>
+      <div v-for="error in v$.auctionItem.description.$errors" :key="error.$uid" class="register__error__message">{{error.$message}}</div>
+
       <label for="title" class="create__auction__item__label">Initial Price</label>
       <input type="number" placeholder="Initial price" class="create__auction__item__input" v-model="auctionItem.initialPrice">
+      <div v-for="error in v$.auctionItem.initialPrice.$errors" :key="error.$uid" class="register__error__message">{{error.$message}}</div>
+
       <button class="create__auction__item__btn">Add auction</button>
     </form>
   </div>
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required,maxLength,minLength,helpers,minValue,maxValue,numeric} from '@vuelidate/validators'
 import axios from "axios";
 
 export default {
+  setup () {
+    return { v$: useVuelidate() }
+  },
   data(){
     return {
-      URL:'http://localhost:8080/item/create',
+      URL:'http://localhost:8081/item/create',
       auctionItem:{
         title:'',
         description:'',
@@ -27,8 +38,35 @@ export default {
       }
     }
   },
+  validations(){
+    return{
+    auctionItem: {
+        title: {
+          required,
+          minLength:minLength(2)
+        },
+        description: {
+          required,
+          minLength:minLength(60)
+        },
+        initialPrice: {
+          required,
+          numeric,
+          minValue:minValue(5),
+          maxValue:maxValue(999999)
+        },
+      }
+    }
+  },
   methods:{
-    createAuctionItem() {
+    async createAuctionItem() {
+
+      const isFormCorrect = await this.v$.$validate()
+      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
+      if (!isFormCorrect) return
+      // actually submit form
+
+
       axios.post(this.URL, this.auctionItem, {
         headers: {
           //this.$store.state.auth_data.authHeaders

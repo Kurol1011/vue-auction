@@ -11,6 +11,7 @@ components.forEach(component => {
     //глобальная регистрация компонента
 })
 
+
 app
     .use(store)
     .use(router)

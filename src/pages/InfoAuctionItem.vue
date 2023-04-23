@@ -2,21 +2,24 @@
   <h1 class="part_auction__item">Info Auction Item</h1>
   <div class="auction__item__container">
     <img src="@/assets/images/imageNotFound.png" alt="" class="auction__item__img">
-    <h3 class="auction__item__title"> {{ this.getMyItem.title }}</h3>
+    <h3 class="auction__item__title"> {{ this.auctionItem.title }}</h3>
     <div class="auction_item__description__container">
       <h4 class="auction_item__description__title">Description</h4>
       <p class="auction_item__description__text">
-        {{ this.getMyItem.description }}
+        {{ this.auctionItem.description }}
       </p>
     </div>
     <div class="auction__item__rate__board">
       <div class="rate__controller">
-      <span class="final__rate">Current rate: $8755</span>
+      <span class="final__rate">Current rate: {{this.auctionItem.finalPrice}}</span>
       <div>
-      <input type="text" class="input__rate" value="" placeholder="Input your rate">
-      <button class="btn__rate" @click="gethi">Up</button>
+      <input type="text" class="input__rate" placeholder="Up your rate on:" v-model="userRate"/>
+        <button class="btn__rate" @click="sendUserRate">Up</button>
+        <button class="btn__rate" @click="getTotalRate">Calc</button>
+        <br>
+        <div class="total__rate" >Your total rate: {{ this.totalRate }}</div>
       </div>
-      <span class="start__rate">Start rate: $ {{ this.getMyItem.initialPrice }}</span>
+      <span class="start__rate">Start rate: $ {{ this.auctionItem.initialPrice }}</span>
       </div>
       <div class="rate__members">
         <ul class="rate__members__list">
@@ -31,21 +34,88 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
+        userRate:0,
+        totalRate: 0,
         auctionId: this.$route.params.id,
+        auctionItem:{
+          id:0,
+          title:'',
+          description:'',
+          initialPrice:0,
+          finalPrice:0
+        }
   }},
   methods:{
-    gethi(){
-
+    sendUserRate(){
+      axios.post('http://localhost:8081/do-rate',{
+              rate:this.totalRate,
+              id:this.auctionItem.id
+            },{
+        headers: {
+          //this.$store.state.auth_data.authHeaders
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      })
+          //.then(response => this.$store.commit('global_data/addAuctionItems',response.data))
+          .then(response => console.log(response.data))
+          .catch(error => console.log(error))
+      //location.reload();
+    },
+    getTotalRate(){
+        this.totalRate = Number(this.auctionItem.finalPrice) + Number(this.userRate);
+    },
+    updateRate(){
+      axios.get(`http://localhost:8081/auctions?id=${this.auctionId}`)
+          .then(response => {
+           this.auctionItem.finalPrice = response.data[0].finalPrice
+          })
+          .catch(error => {
+            if (axios.isCancel(error)) {
+              console.log('Запрос отменен');
+            } else {
+              console.log('Произошла ошибка', error);
+            }
+          });
     }
   },
-  computed:{
-    getMyItem(){
-      return this.$store.state.global_data.auctionItems.find(i => i.id === parseInt(this.auctionId));
+  async created(){
+
+      //return this.$store.state.global_data.auctionItems.find(i => i.id === parseInt(this.auctionId));
+      axios.interceptors.request.use(
+          config => {
+            const token = localStorage.getItem('token');
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+              config.headers["Content-Type"] = "application/json";
+            }
+            return config;
+          },
+          error => {
+            return Promise.reject(error);
+          }
+      );
+      console.log(this.auctionId);
+      console.log(`http://localhost:8081/auctions?id=${this.auctionId}`);
+      axios.get(`http://localhost:8081/auctions?id=${this.auctionId}`)
+          .then(response => {
+                this.auctionItem = response.data[0];
+              }
+          )
+          //.then(response => console.log(response.data))
+          .catch(error => console.log(error))
+    },
+    mounted() {
+      setInterval(() => {
+        this.updateRate()
+      }, 1000);
     }
-  }
+
 
 }
 </script>
@@ -149,6 +219,32 @@ export default {
   font-weight: bold;
   color:#0e0b54;
 }
+.total__rate{
+  display: inline-block;
+  border: 2px solid orangered;
+  border-radius: 20px;
+  margin: 10px 0px 10px;
+  padding-top:5px;
+  width:250px;
+  height:30px;
+  font-size: 14px;
+  text-align: center;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
+}
+
+/*.total__rate__value{*/
+/*  display: inline-block;*/
+/*  border: 2px solid orangered;*/
+/*  border-radius: 20px;*/
+/*  margin: 10px 0px 10px;*/
+/*  width:150px;*/
+/*  height:30px;*/
+/*  font-size: 19px;*/
+/*  text-align: center;*/
+/*  font-family: 'Ubuntu', sans-serif;*/
+/*  font-weight: bold;*/
+/*}*/
 
 .btn__rate{
   width:60px;

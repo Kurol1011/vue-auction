@@ -4,8 +4,8 @@
       <div class="board__item__content">
         <h3 class="board__item__title" :auctionItem="auctionItem.title">{{ auctionItem.title }}</h3>
         <p class="board__item__text" :auctionItem="auctionItem.description">{{ auctionItem.description }}</p>
-        <h5 class="board__item__final__price">Current rate: $875</h5>
-        <h6 class="board__item__start__price" :auctionItem="auctionItem.initialPrice">{{ auctionItem.initialPrice }}</h6>
+        <h5 class="board__item__final__price">Current rate: ${{auctionItem.finalPrice}}</h5>
+        <h6 class="board__item__start__price" :auctionItem="auctionItem.initialPrice">Starting price: ${{ auctionItem.initialPrice }}</h6>
         <button class="board__item__btn" @click="$router.push(`/auctions/${auctionItem.id}`)">More</button>
       </div>
     </div>

@@ -11,10 +11,11 @@
           <router-link to="/myauctions" class="header__link">My auctions</router-link>
         </div>
           <div class="header__profile" ref="header__profile">
-            <a @click="toggleDropdown" class="header__dropbtn">Profile</a>
-            <div class="header__dropdown__content" v-show="showDropdown" @click="hideDropdown" >
-              <router-link to="/register" class="header__dropdown__content__link">Register page</router-link>
-              <router-link to="/login" class="header__dropdown__content__link">Login page</router-link>
+            <a @click.stop="toggleDropdown" class="header__dropbtn">Profile</a>
+            <div class="header__dropdown__content" v-show="showDropdown" ref="dropdown">
+              <router-link to="" class="header__dropdown__content__link" v-if="isAuth">Profile page</router-link>
+              <router-link to="/register" class="header__dropdown__content__link" v-if="!isAuth">Register page</router-link>
+              <router-link to="/login" class="header__dropdown__content__link" >Login page</router-link>
           </div>
         </div>
 
@@ -30,14 +31,29 @@ name:'top-menu',
       showDropdown: false,
     }
   },
+  props:{
+    isAuth:{
+      type:Boolean,
+      default:false
+    }
+  },
+  mounted() {
+    document.addEventListener('click', this.handleOutsideClick);
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleOutsideClick);
+  },
   methods: {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
-    hideDropdown(event) {
+    handleOutsideClick(event) {
+      if (this.showDropdown && !this.$refs.dropdown.contains(event.target)) {
         this.showDropdown = false;
+      }
     },
   },
+
 }
 </script>
 
@@ -143,6 +159,7 @@ a{
 
 .header__dropdown__content__link:hover {
   background-color: #ddd;
+  border-radius: 10px;
 }
 
 </style>
