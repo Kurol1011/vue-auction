@@ -3,13 +3,19 @@
   <div class="auction__item__container">
     <img src="@/assets/images/imageNotFound.png" alt="" class="auction__item__img">
     <h3 class="auction__item__title"> {{ this.auctionItem.title }}</h3>
-    <div class="auction_item__description__container">
-      <h4 class="auction_item__description__title">Description</h4>
-      <p class="auction_item__description__text">
+    <div class="auction__item__description__container">
+      <h4 class="auction__item__description__title">Description</h4>
+      <p class="auction__item__description__text">
         {{ this.auctionItem.description }}
       </p>
     </div>
     <div class="auction__item__rate__board">
+
+      <div class="rate__join" v-if="!isParticipation">
+        <button class="rate__join__btn" @click="joinInAuction()" >Join</button>
+      </div>
+
+      <div v-else>
       <div class="rate__controller">
       <span class="final__rate">Current rate: {{this.auctionItem.finalPrice}}</span>
       <div>
@@ -21,11 +27,11 @@
       </div>
       <span class="start__rate">Start rate: $ {{ this.auctionItem.initialPrice }}</span>
       </div>
+      </div>
+
       <div class="rate__members">
         <ul class="rate__members__list">
-          <li class="rate__members__el">1</li>
-          <li class="rate__members__el">2</li>
-          <li class="rate__members__el">3</li>
+          <li class="rate__members__el" >1</li>
         </ul>
       </div>
     </div>
@@ -48,7 +54,8 @@ export default {
           description:'',
           initialPrice:0,
           finalPrice:0
-        }
+        },
+        isParticipation:false,
   }},
   methods:{
     sendUserRate(){
@@ -82,6 +89,24 @@ export default {
               console.log('Произошла ошибка', error);
             }
           });
+    },
+    joinInAuction(){
+      axios.post('http://localhost:8081/join-auction',this.auctionId,{
+        headers: {
+          //this.$store.state.auth_data.authHeaders
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      })
+          .then(response => { console.log('join is success')
+          })
+          .catch(error => {
+            if (axios.isCancel(error)) {
+              console.log('Запрос отменен');
+            } else {
+              console.log('Произошла ошибка', error);
+            }
+          });
     }
   },
   async created(){
@@ -102,18 +127,22 @@ export default {
       );
       console.log(this.auctionId);
       console.log(`http://localhost:8081/auctions?id=${this.auctionId}`);
-      axios.get(`http://localhost:8081/auctions?id=${this.auctionId}`)
+      await axios.get(`http://localhost:8081/auctions?id=${this.auctionId}`)
           .then(response => {
                 this.auctionItem = response.data[0];
               }
           )
           //.then(response => console.log(response.data))
-          .catch(error => console.log(error))
+          .catch(error => console.log(error));
+      await axios.get(`http://localhost:8081/boarditem?id=${this.auctionId}`,)
+          .then(response => {
+            this.isParticipation = response.data;
+          })
     },
     mounted() {
-      setInterval(() => {
-        this.updateRate()
-      }, 1000);
+      // setInterval(() => {
+      //   this.updateRate()
+      // }, 1000);
     }
 
 
@@ -158,20 +187,20 @@ export default {
   color: #0e0b54;
 }
 
-.auction_item__description__container{
+.auction__item__description__container{
   border:2px solid #a7d9b6;
   border-radius: 30px;
   padding:10px 30px 30px;
 }
 
-.auction_item__description__title{
+.auction__item__description__title{
   font-size: 27px;
   font-family: 'Ubuntu', sans-serif;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.auction_item__description__text{
+.auction__item__description__text{
   color:#0e0b54;
   font-size: 17px;
   font-family: 'Ubuntu', sans-serif;
