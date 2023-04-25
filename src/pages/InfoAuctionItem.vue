@@ -31,7 +31,7 @@
 
       <div class="rate__members">
         <ul class="rate__members__list">
-          <li class="rate__members__el" >1</li>
+          <li class="rate__members__el" v-for="member in members" :key="member.id">{{member.name}}  {{member.surname}}</li>
         </ul>
       </div>
     </div>
@@ -47,6 +47,7 @@ export default {
     return {
         userRate:0,
         totalRate: 0,
+        members:[],
         auctionId: this.$route.params.id,
         auctionItem:{
           id:0,
@@ -90,6 +91,21 @@ export default {
             }
           });
     },
+    updateMembers(){
+      axios.get(`http://localhost:8081/participants?id=${this.auctionId}`)
+          .then(response => {
+            this.members = response.data
+            console.log(response.data)
+          })
+          .catch(error =>{
+            if (axios.isCancel(error)) {
+              console.log('Запрос отменен');
+            } else {
+              console.log('Произошла ошибка', error);
+            }
+          });
+    }
+    ,
     joinInAuction(){
       axios.post('http://localhost:8081/join-auction',this.auctionId,{
         headers: {
@@ -98,7 +114,9 @@ export default {
           'Content-Type': 'application/json'
         }
       })
-          .then(response => { console.log('join is success')
+          .then(response => {
+            console.log('join is success');
+            location.reload();
           })
           .catch(error => {
             if (axios.isCancel(error)) {
@@ -107,7 +125,7 @@ export default {
               console.log('Произошла ошибка', error);
             }
           });
-    }
+    },
   },
   async created(){
 
@@ -140,9 +158,10 @@ export default {
           })
     },
     mounted() {
-      // setInterval(() => {
-      //   this.updateRate()
-      // }, 1000);
+      setInterval(() => {
+        this.updateRate(),
+        this.updateMembers()
+      }, 4000);
     }
 
 
@@ -216,6 +235,26 @@ export default {
   border: 2px solid orange;
   border-radius: 20px;
   padding:10px 20px;
+}
+
+.rate__join{
+  margin: 20px auto;
+}
+
+.rate__join__btn{
+  width:60px;
+  height:30px;
+  border: 2px solid black;
+  border-radius: 20px;
+  color:#0e0b54;
+  font-size: 17px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
+}
+
+.rate__join__btn:hover{
+  color:white;
+  background-color: #1393dc;
 }
 .rate__controller{
   display: flex;
@@ -314,7 +353,13 @@ export default {
 }
 
 .rate__members__list{
-  list-style:none;
+  padding:10px
+}
+
+.rate__members__el{
+  font-size: 16px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: bold;
 }
 
 </style>

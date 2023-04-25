@@ -28,7 +28,7 @@
         <div v-for="error in v$.userRegister.email.$errors" :key="error.$uid" class="register__error__message">{{error.$message}}</div>
 
         <label for="password" class="register__label">Password:</label>
-        <input type="text" class="register__input" v-model="userRegister.password">
+        <input type="password" class="register__input" v-model="userRegister.password">
         <div v-for="error in v$.userRegister.password.$errors" :key="error.$uid" class="register__error__message">{{error.$message}}</div>
 
         <button class="btn__auth" >Register</button>
